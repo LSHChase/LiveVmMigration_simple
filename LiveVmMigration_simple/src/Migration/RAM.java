@@ -18,34 +18,34 @@ public class RAM implements Serializable{
 	 * S : Support 
 	 * E : Error
 	 * */
-	int S;
-	double E;
-	int windowSize;
-	int currentWindowSize;
+	//int S;
+	//double E;
+	//int windowSize;
+	//int currentWindowSize;
 	
 	// Stores frequency of Trending pages
-	Map<Integer,Integer> trendingPages;
+	//Map<Integer,Integer> trendingPages;
 	
 	// stores freq of pages in each window
-	Map<Integer,Integer> pageFreq;
+	//Map<Integer,Integer> pageFreq;
 	
 	public RAM(int size){
 		this.SIZE=size;
 		RAM=new int[size];
 		FLAG=new boolean[size];
 		dirty=new boolean[size];
-		trendingPages=new HashMap<Integer,Integer>();
-		pageFreq=new HashMap<Integer,Integer>();
+		//trendingPages=new HashMap<Integer,Integer>();
+		//pageFreq=new HashMap<Integer,Integer>();
 		
 		//initilization 
 		
 		Arrays.fill(RAM, 0);
 		Arrays.fill(dirty, true);
 		Arrays.fill(FLAG, false);
-		S=10;
-		E=0.01;
-		windowSize=(int)(1.00/E);
-		currentWindowSize=0;
+		//S=10;
+		//E=0.01;
+		//windowSize=(int)(1.00/E);
+//		currentWindowSize=0;
 	}
 	
 	/*
@@ -61,40 +61,40 @@ public class RAM implements Serializable{
 	public void setPageDirty(int index,boolean value){
 		dirty[index]=value;
 		
-		if(value==true){
-			int freq=0;
+//		if(value==true){
+//			int freq=0;
 			// increment freq of this page in pageFreq
-			Integer x = pageFreq.get(index);
-			if(pageFreq.containsKey(index)){
-				freq=(int) pageFreq.get(index);
-			}
-			else{
-				freq = 0;
-			}
-			if(freq<=0) freq=0;
-			pageFreq.put(index, freq + 1);
-			incrementWindowSize();
-		}
+//			Integer x = pageFreq.get(index);
+//			if(pageFreq.containsKey(index)){
+//				freq=(int) pageFreq.get(index);
+//			}
+//			else{
+//				freq = 0;
+//			}
+//			if(freq<=0) freq=0;
+//			pageFreq.put(index, freq + 1);
+//			incrementWindowSize();
+//		}
 	}
 	
 	/* Increments window size by 1 */
-	private void incrementWindowSize() {
-		currentWindowSize++;
-		
-		
-		// decrement of all pageFreq by 1
-		if(currentWindowSize==windowSize){
-			for(Map.Entry m:pageFreq.entrySet()){
-				if(m!=null){
-					int freq=(int) m.getValue();
-					m.setValue(freq-1);
-				}
-			}
-			currentWindowSize=0;
-			//sudharo
-			pageFreq=new HashMap<Integer,Integer>();
-		}
-	}
+//	private void incrementWindowSize() {
+//		currentWindowSize++;
+//		
+//		
+//		// decrement of all pageFreq by 1
+//		if(currentWindowSize==windowSize){
+//			for(Map.Entry m:pageFreq.entrySet()){
+//				if(m!=null){
+//					int freq=(int) m.getValue();
+//					m.setValue(freq-1);
+//				}
+//			}
+//			currentWindowSize=0;
+//			//sudharo
+//			pageFreq=new HashMap<Integer,Integer>();
+//		}
+//	}
 
 	/*
 	 * Returns content at RAM[index]
@@ -119,9 +119,9 @@ public class RAM implements Serializable{
 		return SIZE;
 	}
 	
-	public int getSupport(){
-		return S;
-	}
+//	public int getSupport(){
+//		return S;
+//	}
 	
 	public void displayRAM(){
 		int i=0;
@@ -144,12 +144,12 @@ public class RAM implements Serializable{
 		
 	}
 	
-	public boolean isTrending(int index){
-		int freq=0;
-		if(trendingPages.get(index)==null) freq = 0;
-		else{
-			freq=trendingPages.get(index);
-		}
-		return freq>=getSupport();
-	}
+//	public boolean isTrending(int index){
+//		int freq=0;
+//		if(trendingPages.get(index)==null) freq = 0;
+//		else{
+//			freq=trendingPages.get(index);
+//		}
+//		return freq>=getSupport();
+//	}
 }

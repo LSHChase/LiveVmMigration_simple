@@ -251,7 +251,7 @@ public class VM implements Serializable{
 				migratedPages=0;
 				for(int i=0;i<rm.getSize();i++){
 					/* Send page if it is dirty */
-					if(rm.isPageDirty(i) && rm.isTrending(i)==false) {
+					if(rm.isPageDirty(i) == true) {
 						// send page
 						rm.setPageDirty(i, false);
 						op.writeObject(new RamPage(i, rm.getRAM(i)));
