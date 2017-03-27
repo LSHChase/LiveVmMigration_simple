@@ -181,7 +181,7 @@ public class VM implements Serializable{
 				System.out.println("Executing Write to i: "+a);
 				rm.setRAM(a, stack[sp]);
 				rm.setPageDirty(a, true);
-				Thread.sleep(1000);
+				Thread.sleep(1);
 				break;
 			case LT:
 				b=stack[sp--];
@@ -224,7 +224,7 @@ public class VM implements Serializable{
 			ableToMigrate=true;
 			if(ip==code.length) break;
 			opcode=code[ip];
-			Thread.sleep(300);
+			Thread.sleep(75);
 			System.out.println("IP :: "+ip);
 		}
 	}
@@ -258,7 +258,7 @@ public class VM implements Serializable{
 						migratedPages++;
 						System.out.println("Page sent "+i);
 						try {
-							Thread.sleep(1);
+							Thread.sleep(10);
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -295,7 +295,23 @@ public class VM implements Serializable{
 			op=new ObjectOutputStream(client.getOutputStream());
 						
 			/* Send RAM last time */
-			
+			for(int i=0;i<rm.getSize();i++){
+				/* Send page if it is dirty */
+				if(rm.isPageDirty(i) == true) {
+					// send page
+					rm.setPageDirty(i, false);
+					op.writeObject(new RamPage(i, rm.getRAM(i)));
+					
+					System.out.println("Page sent "+i);
+					try {
+						Thread.sleep(10);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+			op.writeObject(new RamPage(-1, -1));
 			/* Send whole stack after ram migration */
 			System.out.println("Before stack Migration");
 			op.writeObject(stack);
@@ -370,6 +386,17 @@ public class VM implements Serializable{
 			ObjectInputStream ip; // input stream
 			ip=new ObjectInputStream(client.getInputStream());
 			
+			//recieve ram last time
+			while(true){
+				RamPage page=(RamPage) ip.readObject();
+				
+				// end receiving if Source has sent all pages
+				if(page.getPAGE_INDEX()==-1) break;
+				
+				setRamPage(page.getPAGE_INDEX(), page.getPAGE_VALUE());
+				
+				System.out.println("Received Page : ["+ page.getPAGE_INDEX() + "][" + page.getPAGE_VALUE()+"]" );
+			}
 			
 			System.out.println("Before stack migration");
 			/* read stack from source*/

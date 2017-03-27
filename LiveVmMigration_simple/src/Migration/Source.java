@@ -39,9 +39,17 @@ public class Source {
 	public static void main(String args[]){
 				
 		/*  */
+		long startTime_T;
+		long startTime_D;
+		long endTime_T;
+		long endTime_D;
+		long TotalMigrationTime;
+		long DownTime;
+		
 		VM vm=new VM(Program.code2,1000);
 		
 		System.out.println("Len : "+Program.code2.length);
+		
 		
 		RunCPU runcpu=new RunCPU(vm);
 		Thread t1=new Thread(runcpu);
@@ -56,6 +64,8 @@ public class Source {
 			e.printStackTrace();
 		}
 		
+		
+		startTime_T=System.currentTimeMillis();
 		/* Initiate Migration */
 		Thread t2=new Thread(new StartPreCopyMigration(vm));
 		t2.start();
@@ -67,7 +77,18 @@ public class Source {
 			e.printStackTrace();
 		}
 		t1.stop();
+		
+		startTime_D=System.currentTimeMillis();
 		vm.migrateStates();
+		
+		endTime_T=System.currentTimeMillis();
+		
+		TotalMigrationTime = endTime_T-startTime_T;
+		DownTime = endTime_T-startTime_D;
+		
+		System.out.println("Total Migration Time : \t"+TotalMigrationTime+
+							"\nDownTime : \t"+DownTime);
+		
 		System.out.println("Migration completed...");
 	}
 }
