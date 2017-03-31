@@ -3,8 +3,10 @@ package Migration;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 public class RAM implements Serializable{
 	
@@ -13,6 +15,7 @@ public class RAM implements Serializable{
 	private int RAM[]; 
 	private boolean FLAG[];
 	private boolean dirty[];   // check if page is dirty or not ?
+	public Set <Integer> dirtyPage;
 	
 	/*
 	 * S : Support 
@@ -33,14 +36,18 @@ public class RAM implements Serializable{
 		this.SIZE=size;
 		RAM=new int[size];
 		FLAG=new boolean[size];
-		dirty=new boolean[size];
+//		dirty=new boolean[size];
 		//trendingPages=new HashMap<Integer,Integer>();
 		//pageFreq=new HashMap<Integer,Integer>();
+		dirtyPage=new HashSet<Integer>();
 		
 		//initilization 
 		
+		for(int i=0;i<size;i++){
+			dirtyPage.add(i);
+		}
 		Arrays.fill(RAM, 0);
-		Arrays.fill(dirty, true);
+//		Arrays.fill(dirty, true);
 		Arrays.fill(FLAG, false);
 		//S=10;
 		//E=0.01;
@@ -52,15 +59,20 @@ public class RAM implements Serializable{
 	 * checks if Page is dirty or not 
 	 * */
 	public boolean isPageDirty(int index){
-		return dirty[index];
+//		return dirty[index];
+		return dirtyPage.contains(index);
 	}
 	
 	/*
 	 * Sets the value of the Page
 	 * */
 	public void setPageDirty(int index,boolean value){
-		dirty[index]=value;
-		
+//		dirty[index]=value;
+		if(value==true){
+			dirtyPage.add(index);
+		}
+		else
+			dirtyPage.remove(index);
 //		if(value==true){
 //			int freq=0;
 			// increment freq of this page in pageFreq
@@ -110,7 +122,11 @@ public class RAM implements Serializable{
 	public boolean getFlag(int index) {
 		return FLAG[index];
 	}
-
+	
+	public int getDirtyPageSize(){
+		return dirtyPage.size();
+	}
+	
 	public void setFlag(int index,boolean value) {
 		FLAG[index] = value;
 	}

@@ -8,7 +8,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 import static Migration.Instructions.*;
 
@@ -65,8 +67,9 @@ public class VM implements Serializable{
 	public void sendVM(){
 		try {			
 			// Accept client request
-			Socket client=new Socket(Config.destinationIP,Config.destinationPORT);
-			
+			Socket client;
+			client = new Socket(Config.destinationIP,Config.destinationPORT);
+			System.out.println("hi");
 			ObjectOutputStream op=new ObjectOutputStream(client.getOutputStream());
 			op.writeObject(new VMInfo(this.getStackSize(),this.getStackSize()));
 			
@@ -181,7 +184,7 @@ public class VM implements Serializable{
 				System.out.println("Executing Write to i: "+a);
 				rm.setRAM(a, stack[sp]);
 				rm.setPageDirty(a, true);
-				Thread.sleep(1);
+				Thread.sleep(25);
 				break;
 			case LT:
 				b=stack[sp--];
@@ -248,10 +251,15 @@ public class VM implements Serializable{
 			
 			
 			do {
-				migratedPages=0;
-				for(int i=0;i<rm.getSize();i++){
-					/* Send page if it is dirty */
-					if(rm.isPageDirty(i) == true) {
+				
+				Set <Integer> dummy = new HashSet<Integer>(rm.dirtyPage);
+				for(int i : dummy){
+					
+//				}
+//				migratedPages=0;
+//				for(int i=0;i<rm.getSize();i++){
+//					/* Send page if it is dirty */
+//					if(rm.isPageDirty(i) == true) {
 						// send page
 						rm.setPageDirty(i, false);
 						op.writeObject(new RamPage(i, rm.getRAM(i)));
@@ -263,7 +271,7 @@ public class VM implements Serializable{
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-					}
+//					}
 				}
 				System.out.println("In loop...");
 				noOfIterations++;
@@ -293,11 +301,14 @@ public class VM implements Serializable{
 			
 			ObjectOutputStream op;
 			op=new ObjectOutputStream(client.getOutputStream());
-						
-			/* Send RAM last time */
-			for(int i=0;i<rm.getSize();i++){
-				/* Send page if it is dirty */
-				if(rm.isPageDirty(i) == true) {
+			Set <Integer> dummy = new HashSet<Integer>(rm.dirtyPage);
+			for(int i : dummy){
+				
+//			}
+//			/* Send RAM last time */
+//			for(int i=0;i<rm.getSize();i++){
+//				/* Send page if it is dirty */
+//				if(rm.isPageDirty(i) == true) {
 					// send page
 					rm.setPageDirty(i, false);
 					op.writeObject(new RamPage(i, rm.getRAM(i)));
@@ -309,7 +320,7 @@ public class VM implements Serializable{
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-				}
+//				}
 			}
 			op.writeObject(new RamPage(-1, -1));
 			/* Send whole stack after ram migration */
